@@ -283,6 +283,34 @@ h3{font-size:1.05rem;font-weight:700;color:var(--white)}
   <button class="nb" id="next">&#8594;</button>
 </nav>
 <script>
+const dbStorage = {
+  setItem: async (key, value) => {
+    const res = await fetch('/api/data', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ key, value })
+    });
+    return res.json();
+  },
+  getItem: async (key) => {
+    try {
+      const res = await fetch(`/api/data?key=${encodeURIComponent(key)}`);
+      if (!res.ok) return null;
+      const data = await res.json();
+      return data.value;
+    } catch {
+      return null;
+    }
+  },
+  removeItem: async (key) => {
+    const res = await fetch('/api/data', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ key })
+    });
+    return res.json();
+  }
+};
 var slides = document.querySelectorAll('#deck .slide');
 var dotsEl = document.getElementById('dots');
 var counter = document.getElementById('counter');
